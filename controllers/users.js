@@ -55,6 +55,7 @@ module.exports.createUser = async (req, res, next ) => {
 module.exports.getCurrentUser = async (req, res, next) => {
   try {
     const userId = req.user._id;
+    console.log("id del usuario actual");
     console.log(userId);
     const user = await userModel.findById(userId);
     if (!user) {
@@ -67,32 +68,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
     next(error);
   }
 };
-module.exports.updateUserProfile = async (req, res, next) => {
-  try {
-    const userId = req.params.userId;
-    const loggedInUserId = req.user._id;
-    if (userId !== loggedInUserId) {
-      return res
-        .status(HttpStatus.FORBIDDEN)
-        .send({ message: "No tienes permiso para editar este perfil" });
-    }
-    const user = await userModel.findByIdAndUpdate(userId, updates, {
-      new: true,
-    });
 
-    if (!user) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .send({ message: "Usuario no encontrado" });
-    }
-
-    res
-      .status(HttpStatus.OK)
-      .send({ message: "Perfil actualizado correctamente", user });
-  } catch (error) {
-    next(error);
-  }
-};
 module.exports.getUsers = async (req, res, next) => {
   try {
     const usersData = await userModel.find({}).orFail();
@@ -123,51 +99,113 @@ module.exports.getUser = async (req, res, next) => {
     next(error);
   }
 };
-
-function isValidURL(url) {
-  return /https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})?([a-zA-Z0-9\-._~:\/?%#\[\]@!$&'()*+,;=]*)?/.test(
-    url
-  );
-}
-module.exports.updateAvatar = async (req, res, next) => {
+exports.addToCart = async (req, res, next) => {
   try {
-    let avatar = req.body.avatar;
-    if (!isValidURL(avatar)) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .send({ error: "La URL no es válida para una actualizacion" });
+    const {productId} = req.params;
+    const {productName, price, stock}=req.body;
+    const userId = req.user._id;
+     const user = await userModel.findById(userId);
+     if (!user) {
+       return res.status(404).json({ message: "Usuario no encontrado" });
+     }
+      const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
+    if (existingProductIndex !== -1) {
+      user.cart[existingProductIndex].quantity += 1;
+    } else {
+
+      user.cart.push({ productId, productName, stock, price, quantity: 1 });
     }
-    const updateAvatar = await userModel.findByIdAndUpdate(
-      req.user._id,
-      { avatar },
-      { new: true }
-    );
-    res.send({ data: updateAvatar });
+    await user.save();
+    res.status(200).json({ message: "Producto agregado al carrito exitosamente" });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: "se pasaron datos invalidos al agregar un producto" });
+    }
+    next(error);
+  }
+};
+
+exports.getCartProducts = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    console.log("Id del usuario para obtener los productos del carrito");
+    console.log(userId);
+    const user = await userModel.findById(userId).select('cart');
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.status(200).json({ data: user.cart });
   } catch (error) {
     next(error);
   }
 };
-module.exports.updateProfile = async (req, res, next) => {
+
+exports.subtractFromCartQuantity = async (req, res, next) => {
   try {
-    let { name, about } = req.body;
-    const regex = /^[a-zA-Z0-9\s]{2,30}$/;
-    if (!regex.test(name) || !regex.test(about)) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .send({ error: "datos no validos para actualizar el perfil" });
+    const {productId} = req.params;
+
+    const userId = req.user._id;
+     const user = await userModel.findById(userId);
+     if (!user) {
+       return res.status(404).json({ message: "Usuario no encontrado" });
+     }
+      const existingProductIndex = user.cart.findIndex(item => item.productId === productId);// Verificamos si el producto ya está en el carrito
+
+    if (existingProductIndex !== -1) {// Si el producto ya está en el carrito, actualizamos la cantidad
+      user.cart[existingProductIndex].quantity -= 1;
+
+      if (user.cart[existingProductIndex].quantity <= 0) {
+        user.cart.splice(existingProductIndex, 1);
+      }
+      await user.save();
+      res.send({ message: "Cantidad del producto actualizada exitosamente en el carrito" });
+
+    } else {
+      res.status(HttpStatus.NOT_FOUND).send({ error: "El producto no está en el carrito" });
     }
-    const dataProfile = await userModel.findByIdAndUpdate(
-      req.user._id,
-      { name, about },
-      { new: true }
-    );
-    res.send({ data: dataProfile });
+
   } catch (error) {
-    if (error.name === "DocumentNotFoundError") {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .send({ error: "usuario no encontrado." });
+    if (error.name === "ValidationError") {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: "se pasaron datos invalidos al agregar un producto" });
     }
+    next(error);
+  }
+};
+
+exports.addToFavorites = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const { productName, price, stock } = req.body;
+    const userId = req.user._id;
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: "Usuario no encontrado" });
+    }
+    const isProductInFavorites = user.favorites.some(item => item.productId === productId);
+    if (isProductInFavorites) {
+      return  res.status(HttpStatus.BAD_REQUEST).send({ error: "El producto ya está en favoritos" });
+    }
+    user.favorites.push({ productId, productName, stock, price });
+    await user.save();
+    res.status(200).json({ message: "Producto agregado a favoritos exitosamente" });
+  } catch (error) {
+    console.error("Error al agregar producto a favoritos:", error);
+    next(error);
+  }
+};
+exports.getProductsFavorites = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    console.log("Id del usuario para obtener los productos del carrito");
+    console.log(userId);
+    const user = await userModel.findById(userId).select('favorites');
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.status(200).json({ data: user.favorites });
+  } catch (error) {
     next(error);
   }
 };

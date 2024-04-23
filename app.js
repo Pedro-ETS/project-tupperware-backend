@@ -9,7 +9,6 @@ const cors = require('cors');
 const { login, createUser } = require("./controllers/users");
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
-const cartsRouter = require("./routes/carts");
 const { HttpStatus, HttpResponseMessage } = require("./enums/http");
 const { requestLogger, errorLogger } = require("./middleware/logger");
 console.log(process.env.NODE_ENV);
@@ -57,7 +56,7 @@ app.post(//registra usuarios
 app.use(auth);
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
-app.use("/carts", cartsRouter);
+
 
 app.use((req, res) => {
   return res

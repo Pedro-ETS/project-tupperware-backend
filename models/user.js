@@ -34,7 +34,55 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     select: false
-  }
+  },
+  cart: [
+    {
+      productId: {
+        type: String, // usamos el string ya que id lo proporcionamos nosotros y el ObjId nos lo genera MongooDB
+        required: true
+      },
+      productName: {
+        type: String,
+        required: true
+      },
+      stock:{
+        type: Number,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      },
+      quantity: {
+        type: Number,
+        default: 0
+      }
+    }
+  ],
+  favorites: [
+    {
+      productId: {
+        type: String, // usamos el string ya que id lo proporcionamos nosotros y el ObjId nos lo genera MongooDB
+        required: true
+      },
+      productName: {
+        type: String,
+        required: true
+      },
+      stock:{
+        type: Number,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      },
+      quantity: {
+        type: Number,
+        default: 0
+      }
+    }
+  ]
 });
 
 userSchema.statics.findUserByCredentials = function (email, password) {

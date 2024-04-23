@@ -6,8 +6,11 @@ const {
   getCurrentUser,
   getUsers,
   getUser,
-  updateAvatar,
-  updateProfile,
+  addToCart,
+  getCartProducts,
+  subtractFromCartQuantity,
+  addToFavorites,
+  getProductsFavorites
 } = require("../controllers/users");
 
 const validateURL = (value, helpers) => {
@@ -39,26 +42,48 @@ router.get("/:userId", celebrate({
   }),
   getUser
 );
-router.patch("/avatar", celebrate({
-    body: Joi.object().keys({
-      avatar: Joi.string().custom(validateURL),
-    }),
-    headers: Joi.object({
-      authorization: Joi.string().required(),
-    }).unknown(true),
+// carrito de compras
+router.post("/:productId/add-to-cart", celebrate({
+
+  params: Joi.object().keys({
+    productId: Joi.string().alphanum().length(24).required(),
   }),
-  updateAvatar
-);
-router.patch("/me", celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-    }),
-    headers: Joi.object({
-      authorization: Joi.string().required(),
-    }).unknown(true),
+  body: Joi.object().keys({
+    productName: Joi.string().required(),
+    price: Joi.number().required(),
+    stock: Joi.number().required(),
   }),
-  updateProfile
-);
+}), addToCart);
+
+router.delete("/:productId/delete-to-cart", celebrate({
+  params: Joi.object().keys({
+    productId: Joi.string().alphanum().length(24).required(),
+  }),
+}), subtractFromCartQuantity );
+
+router.get("/products/Cart", celebrate({
+  headers: authHeaderSchema,
+}), getCartProducts) ;
+
+//favorites
+router.post("/:productId/add-to-favorites", celebrate({
+  params: Joi.object().keys({
+    productId: Joi.string().alphanum().length(24).required(),
+  }),
+  body: Joi.object().keys({
+    productName: Joi.string().required(),
+    price: Joi.number().required(),
+    stock: Joi.number().required(),
+  }),
+}), addToFavorites);
+
+router.get("/products/favorites", celebrate({
+  headers: authHeaderSchema,
+}), getProductsFavorites) ;
+
+
+
+
+
 
 module.exports = router;
