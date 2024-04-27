@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
-    "dev": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "NODE_ENV=development nodemon app.js || node app.js"
+
   },
   "repository": {
     "type": "git",

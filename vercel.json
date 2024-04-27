@@ -1,0 +1,19 @@
+{
+  "builds": [
+    {
+      "src": "app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/app.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "JWT_SECRET": "super-strong-secret",
+    "MONGODB_URI": "mongodb+srv://Ernesto:RpOst0Dkg3qZSDEd@tupperware.vld2yzq.mongodb.net/TupperwareDB"
+  }
+}

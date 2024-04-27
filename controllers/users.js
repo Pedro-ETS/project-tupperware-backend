@@ -64,7 +64,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
         .json({ message: "Usuario no encontrado" });
     }
     res.status(200).json(user);
-  } catch (error) {
+  } catch (error) { 
     next(error);
   }
 };
@@ -172,7 +172,6 @@ exports.subtractFromCartQuantity = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.addToFavorites = async (req, res, next) => {
   try {
     const { productId } = req.params;

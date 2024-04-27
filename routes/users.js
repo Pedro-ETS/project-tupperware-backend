@@ -10,7 +10,7 @@ const {
   getCartProducts,
   subtractFromCartQuantity,
   addToFavorites,
-  getProductsFavorites
+  getProductsFavorites  
 } = require("../controllers/users");
 
 const validateURL = (value, helpers) => {

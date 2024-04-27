@@ -11,7 +11,8 @@ const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
 const { HttpStatus, HttpResponseMessage } = require("./enums/http");
 const { requestLogger, errorLogger } = require("./middleware/logger");
-console.log(process.env.NODE_ENV);
+const MONGODB_URI = process.env.MONGODB_URI;
+
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
@@ -19,7 +20,7 @@ const validateURL = (value, helpers) => {
   return helpers.error("string.uri");
 };
 
-mongoose.connect("mongodb://localhost:27017/tupperware", {
+mongoose.connect(MONGODB_URI, {//url para conectarme a MongooDB Atlas
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

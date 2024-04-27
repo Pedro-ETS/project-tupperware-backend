@@ -1,7 +1,7 @@
-# Tripleten web_project_around_express
+# Tripleten Proyecto final 
 
 ### Descripción general
-*La funcionalidad de este proyecto es poner en práctica el back end, es decir trabajar del lado del servidor, mencionaré algunas de las tecnologías que aplique asi como también el framework que utilicé. Todo esto es muy esencial para poder implementar la lógica del servidor, gestionar datos, manejar solicitudes y respuestas HTTP, entre otras tareas relacionadas con el server.
+*La funcionalidad de este proyecto es poner en práctica todo lo referente al back end y poder culminar el curso, es decir trabajar del lado del servidor, mencionaré algunas de las tecnologías que aplique asi como también el framework que utilicé. Todo esto es muy esencial para poder implementar la lógica del servidor, gestionar datos, manejar solicitudes y respuestas HTTP, entre otras tareas relacionadas con el server.
 
 1. **Node.js**
 - Es el entorno de ejecución de JavaScript del lado del servidor que permite ejecutar código JavaScript en el servidor. En este caso, se utiliza para crear un servidor web.
@@ -27,17 +27,24 @@
 8. **Postman**
 - Herramienta colaborativa que se utiliza principalmente para probar servicios web y APIs (Interfaz de Programación de Aplicaciones). Postman permite enviar solicitudes HTTP a servicios web y APIs para probar su funcionalidad. Puedes realizar solicitudes GET, POST, PUT, DELETE y otras, lo que facilita la verificación de la respuesta del servidor.
 
-9. **MongoDB**
-- MongoDB es una base de datos de documentos que ofrece una gran escalabilidad y flexibilidad, y un modelo de consultas e indexación avanzado.El modelo de documentos de MongoDB resulta muy fácil de aprender y usar, y proporciona a los desarrolladores todas las funcionalidades que necesitan para satisfacer los requisitos más complejos a cualquier escala.
+9. **MongoDB Atlas**
+- MongoDB Atlas es un servicio de base de datos en la nube proporcionado por MongoDB, Inc. MongoDB es una base de datos NoSQL, orientada a documentos, que ofrece una gran flexibilidad y escalabilidad para el desarrollo de aplicaciones modernas. MongoDB Atlas permite a los desarrolladores implementar, escalar y administrar clústeres de MongoDB de manera sencilla en la nube.
 
-10. **Esquemas de validacion**
+10. **Vercel**
+- Se utiliza para implementar aplicaciones web creadas con frameworks populares como Next.js, React, Vue.js, Angular y otros. Vercel proporciona una integración perfecta con estos frameworks, lo que facilita la implementación de aplicaciones web de forma rápida y sencilla.
+
+
+11. **Esquemas de validacion**
 - En Mongoose, un Schema (Esquema) es la estructura que indica cual es la forma en la que están estructurados los documentos que se almacenan en una colección de MongoDB. Cada schema esta compuesto por campos y tipos de datos permitidos, además de opciones para llevar acabo validación de dichos documentos
 
-11. **CRUD**
+12. **CRUD**
 - Estas operaciones permiten a los usuarios crear nuevos datos (Create), leer los existentes (Read), actualizarlos (Update) y eliminarlos (Delete). CRUD es una función esencial para muchos sistemas de información, ya que permite a los usuarios realizar tareas básicas de mantenimiento y gestión de datos.
 
-12. **Expreciones regulares**
+13. **Expreciones regulares**
 - Las expresiones regulares, también conocidas como regex o regexp, son patrones de búsqueda utilizados en procesamiento de texto para encontrar y/o manipular cadenas de caracteres. Estos patrones son especialmente útiles cuando se trabaja con texto y se necesita realizar operaciones complejas de búsqueda, validación o transformación de datos.
 
-13. **Manejo de errores**
+14. **Manejo de errores**
 - Un error no manejado puede provocar la caída completa de una aplicación o de una parte crítica de ella. Al manejar los errores de manera adecuada, puedes diseñar una aplicación que sea más robusta y que pueda manejar situaciones inesperadas sin colapsar completamente.
+
+[Enlace del Backend](https://project-tupperware-backend.vercel.app/)
+
