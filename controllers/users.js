@@ -7,13 +7,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  if (!password) {
-    return res
-      .status(HttpStatus.BAD_REQUEST)
-      .send({ message: "La contraseña no está definida" });
-  }
-  return userModel
-    .findUserByCredentials(email, password)
+  return userModel.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
         token: jwt.sign({ _id: user._id },NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', {
@@ -22,9 +16,13 @@ module.exports.login = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(err);
+      const error = new Error('email o password incorrectos');
+      error.statusCode = HttpStatus.UNAUTHORIZED;
+      next(error);
     });
 };
+
+
 module.exports.createUser = async (req, res, next ) => {
   try {
     const { name, address, phone, email, password } = req.body;
@@ -64,7 +62,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
         .json({ message: "Usuario no encontrado" });
     }
     res.status(200).json(user);
-  } catch (error) { 
+  } catch (error) {
     next(error);
   }
 };

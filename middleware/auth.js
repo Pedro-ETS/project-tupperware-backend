@@ -6,7 +6,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const handleAuthError = (res) => {
   res
     .status(HttpStatus.FORBIDDEN)
-    .send({ message: 'Error de autorizaciónnnnn' });
+    .send({ message: 'Error de autorización' });
 };
 
 const extractBearerToken = (header) => {

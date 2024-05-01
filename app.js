@@ -67,6 +67,7 @@ app.use((req, res) => {
 
 app.use(errorLogger);
 app.use(errors());
+
 app.use((err, req, res, next) => {
   const { statusCode = HttpStatus.INTERNAL_SERVER_ERROR, message } = err;
   res.status(statusCode).send({
@@ -74,6 +75,7 @@ app.use((err, req, res, next) => {
       statusCode === 500 ? "Se ha producido un error en el servidor" : message,
   });
 });
+
 const { PORT = 3000 } = process.env;
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
