@@ -15,9 +15,9 @@ module.exports.getCards = async (req, res, next) => {
 
 module.exports.createCard = async (req, res, next) => {
   try {
-    const { name,price,stock, link } = req.body;
+    const { name, priceNormal, price, stock, link, image2 } = req.body;
     const owner = req.user._id;
-    const newCard = await cardModel.create({ name, price, stock, link, owner });
+    const newCard = await cardModel.create({ name, priceNormal, price, stock, link,image2, owner });
     res.send({ data: newCard });
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -26,6 +26,23 @@ module.exports.createCard = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.searchCardByName = async (req, res, next) => {
+  try {
+    const { name } = req.params; 
+    if (!name) {
+      return res.status(HttpStatus.BAD_REQUEST).send({ error: "Se requiere proporcionar un nombre para buscar." });
+    }
+    const card = await cardModel.find({ name: { $regex: new RegExp(name, "i") } }).orFail();//se busca de manera insensible a mayusculas y min
+    res.send({ data: card});
+  } catch (error) {
+    if (error.name === "DocumentNotFoundError") {
+      return res.status(HttpStatus.NOT_FOUND).send({ error: "No se encontraron tarjetas con el nombre especificado." });
+    }
+    next(error);
+  }
+};
+
 
 module.exports.deleteCard = async (req, res, next) => {
   console.log(req.params.cardId);

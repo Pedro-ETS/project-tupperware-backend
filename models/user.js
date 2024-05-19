@@ -45,6 +45,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
       },
+      imageUrl: {
+        type: String
+      },
       stock:{
         type: Number,
         required: true
@@ -68,6 +71,9 @@ const userSchema = new mongoose.Schema({
       productName: {
         type: String,
         required: true
+      },
+      imageUrl: {
+        type: String
       },
       stock:{
         type: Number,

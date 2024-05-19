@@ -9,6 +9,12 @@ const cardSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  priceNormal:{
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 10,
+  },
   price:{
     type: String,
     required: true,
@@ -22,6 +28,18 @@ const cardSchema = new mongoose.Schema({
     maxlength: 5,
   },
   link: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})?([a-zA-Z0-9\-._~:\/?%#\[\]@!$&\'()*+,;=]*)?/.test(
+          v
+        );
+      },
+      message: (props) => `${props.value} is not a valid !`,
+    },
+  },
+  image2: {
     type: String,
     required: true,
     validate: {

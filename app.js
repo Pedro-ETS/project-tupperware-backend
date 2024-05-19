@@ -11,11 +11,12 @@ const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
 const { HttpStatus, HttpResponseMessage } = require("./enums/http");
 const { requestLogger, errorLogger } = require("./middleware/logger");
+const { getCards, searchCardByName }= require("./controllers/cards");
 const MONGODB_URI = process.env.MONGODB_URI;
 
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
-    return value;
+    return value;c 
   }
   return helpers.error("string.uri");
 };
@@ -54,6 +55,13 @@ app.post(//registra usuarios
   }),
   createUser
 );
+app.get("/cards", getCards);
+app.get("/cards/search/:name", celebrate({
+  params: Joi.object().keys({
+    name: Joi.string().required(),
+  }),
+}), searchCardByName);
+
 app.use(auth);
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);

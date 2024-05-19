@@ -100,7 +100,7 @@ module.exports.getUser = async (req, res, next) => {
 exports.addToCart = async (req, res, next) => {
   try {
     const {productId} = req.params;
-    const {productName, price, stock}=req.body;
+    const {productName, imageUrl, price, stock}=req.body;
     const userId = req.user._id;
      const user = await userModel.findById(userId);
      if (!user) {
@@ -111,7 +111,7 @@ exports.addToCart = async (req, res, next) => {
       user.cart[existingProductIndex].quantity += 1;
     } else {
 
-      user.cart.push({ productId, productName, stock, price, quantity: 1 });
+      user.cart.push({ productId, productName, imageUrl, stock, price, quantity: 1 });
     }
     await user.save();
     res.status(200).json({ message: "Producto agregado al carrito exitosamente" });
@@ -173,7 +173,7 @@ exports.subtractFromCartQuantity = async (req, res, next) => {
 exports.addToFavorites = async (req, res, next) => {
   try {
     const { productId } = req.params;
-    const { productName, price, stock } = req.body;
+    const { productName, imageUrl, price, stock } = req.body;
     const userId = req.user._id;
     const user = await userModel.findById(userId);
     if (!user) {
@@ -183,7 +183,7 @@ exports.addToFavorites = async (req, res, next) => {
     if (isProductInFavorites) {
       return  res.status(HttpStatus.BAD_REQUEST).send({ error: "El producto ya está en favoritos" });
     }
-    user.favorites.push({ productId, productName, stock, price });
+    user.favorites.push({ productId, imageUrl, productName, stock, price });
     await user.save();
     res.status(200).json({ message: "Producto agregado a favoritos exitosamente" });
   } catch (error) {
@@ -191,6 +191,7 @@ exports.addToFavorites = async (req, res, next) => {
     next(error);
   }
 };
+
 exports.getProductsFavorites = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -203,6 +204,28 @@ exports.getProductsFavorites = async (req, res, next) => {
     }
     res.status(200).json({ data: user.favorites });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.removeFromFavorites = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id;
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: "Usuario no encontrado" });
+    }
+    const indexToRemove = user.favorites.findIndex(item => item.productId === productId);
+    if (indexToRemove === -1) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: "El producto no está en la lista de favoritos" });
+    }
+    user.favorites.splice(indexToRemove, 1);
+
+    await user.save();
+    res.status(200).json({data: user.favorites});
+  } catch (error) {
+    console.error("Error al eliminar producto de favoritos:", error);
     next(error);
   }
 };

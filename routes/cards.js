@@ -3,11 +3,10 @@ const path = require("path");
 const { celebrate, Joi } = require("celebrate");
 const validator = require("validator");
 const {
-  getCards,
   createCard,
   deleteCard,
   likeCard,
-  dislikeCard,
+  dislikeCard
 } = require("../controllers/cards");
 
 const validateURL = (value, helpers) => {
@@ -21,19 +20,20 @@ const authHeaderSchema = Joi.object({
   authorization: Joi.string().required(),
 }).unknown(true);
 
-router.get("/", celebrate({
-  headers: authHeaderSchema,
-}), getCards);
 
 router.post("/",celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).required().max(50),
+    priceNormal: Joi.string().min(2).max(10).required(),
     price: Joi.string().min(2).max(10).required(),
     stock: Joi.string().min(1).max(5).required(),
     link: Joi.string().required().custom(validateURL),
+    image2: Joi.string().required().custom(validateURL),
     headers: authHeaderSchema,
   })
 }), createCard);
+
+
 
 router.put("/:cardId/likes", celebrate({
   params: Joi.object().keys({

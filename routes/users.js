@@ -10,7 +10,8 @@ const {
   getCartProducts,
   subtractFromCartQuantity,
   addToFavorites,
-  getProductsFavorites  
+  getProductsFavorites,
+  removeFromFavorites
 } = require("../controllers/users");
 
 const validateURL = (value, helpers) => {
@@ -50,6 +51,7 @@ router.post("/:productId/add-to-cart", celebrate({
   }),
   body: Joi.object().keys({
     productName: Joi.string().required(),
+    imageUrl: Joi.string().required(),
     price: Joi.number().required(),
     stock: Joi.number().required(),
   }),
@@ -72,6 +74,7 @@ router.post("/:productId/add-to-favorites", celebrate({
   }),
   body: Joi.object().keys({
     productName: Joi.string().required(),
+    imageUrl: Joi.string().required(),
     price: Joi.number().required(),
     stock: Joi.number().required(),
   }),
@@ -80,6 +83,14 @@ router.post("/:productId/add-to-favorites", celebrate({
 router.get("/products/favorites", celebrate({
   headers: authHeaderSchema,
 }), getProductsFavorites) ;
+
+router.delete("/:productId/remove-to-favorites", celebrate({
+  params: Joi.object().keys({
+    productId: Joi.string().alphanum().length(24).required(),
+  }),
+
+}), removeFromFavorites) ;
+
 
 
 
